@@ -181,7 +181,7 @@ async function initLiff() {
     }
 
     const profile = await liff.getProfile();
-
+    window.lineIdToken = liff.getIDToken();
     if (profile.userId) {
       message.textContent =
         'LINE認証に成功しました！';
