@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GOLFREND 予約</title>
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
 <style>
 * { box-sizing: border-box; }
@@ -163,6 +164,39 @@ dateInput.addEventListener('change', function() {
     '<option value="">空き時間の連携準備中</option>';
 });
 </script>
+<script>
+async function initLiff() {
+  const message = document.getElementById('message');
 
+  message.textContent = 'LINE認証を確認しています...';
+
+  try {
+    await liff.init({
+      liffId: '2012432284-iEd06CLr'
+    });
+
+    if (!liff.isLoggedIn()) {
+      liff.login();
+      return;
+    }
+
+    const profile = await liff.getProfile();
+
+    if (profile.userId) {
+      message.textContent =
+        'LINE認証に成功しました！';
+    } else {
+      message.textContent =
+        'LINEユーザーIDを取得できませんでした。';
+    }
+
+  } catch (error) {
+    message.textContent =
+      'LINE認証エラー：' + error.message;
+  }
+}
+
+window.addEventListener('load', initLiff);
+</script>
 </body>
 </html>
