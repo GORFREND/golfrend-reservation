@@ -111,9 +111,6 @@ button:disabled {
 <label for="name">氏名</label>
 <input id="name" placeholder="氏名を入力">
 
-<label for="line">LINE名</label>
-<input id="line" placeholder="任意入力">
-
 <label for="phone">電話番号</label>
 <input id="phone" type="tel" placeholder="電話番号を入力">
 
@@ -244,7 +241,6 @@ async function sendReservation() {
     date: document.getElementById('date').value,
     time: document.getElementById('time').value,
     name: document.getElementById('name').value.trim(),
-    line: document.getElementById('line').value.trim(),
     phone: document.getElementById('phone').value.trim(),
     type: document.getElementById('type').value,
     plan: document.getElementById('plan').value
