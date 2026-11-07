@@ -224,5 +224,29 @@ async function initLiff() {
 
 window.addEventListener('load', initLiff);
 </script>
+<script>
+async function testGasConnection() {
+  const url = 'https://script.google.com/macros/s/AKfycbwvw4D-oSsd4Xm42Y5_TKOUXqM-pKgV-AIImVCFGadpipOHaRj766uiWkG4dKcLce0-WQ/exec';
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain'
+      },
+      body: JSON.stringify({ action: 'test' })
+    });
+
+    const result = await response.json();
+    alert(result.message);
+  } catch (error) {
+    alert('通信エラー：' + error.message);
+  }
+}
+</script>
+
+<button type="button" onclick="testGasConnection()">
+  通信テスト
+</button>
 </body>
 </html>
