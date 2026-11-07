@@ -159,9 +159,35 @@ typeInput.addEventListener('change', function() {
   }
 });
 
-dateInput.addEventListener('change', function() {
+dateInput.addEventListener('change', async function() {
   timeInput.innerHTML =
-    '<option value="">空き時間の連携準備中</option>';
+    '<option value="">接続テスト中...</option>';
+
+  const url =
+    'https://script.google.com/macros/s/AKfycbwvw4D-oSsd4Xm42Y5_TKOUXqM-pKgV-AIImVCFGadpipOHaRj766uiWkG4dKcLce0-WQ/exec' +
+    '?action=slots' +
+    '&shop=' + encodeURIComponent(document.getElementById('shop').value) +
+    '&date=' + encodeURIComponent(dateInput.value);
+
+  try {
+    const response = await fetch(url);
+    const result = await response.json();
+
+    timeInput.innerHTML =
+      '<option value="">時間を選択してください</option>';
+
+    (result.slots || []).forEach(function(slot) {
+      const option = document.createElement('option');
+      option.value = slot;
+      option.textContent = slot;
+      timeInput.appendChild(option);
+    });
+
+  } catch (error) {
+    timeInput.innerHTML =
+      '<option value="">接続できませんでした</option>';
+    console.error(error);
+  }
 });
 </script>
 <script>
