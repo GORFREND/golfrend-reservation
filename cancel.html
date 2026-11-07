@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <title>GOLFREND 予約キャンセル</title>
 <style>
 body {
@@ -58,5 +59,37 @@ button {
 
 <p id="message"></p>
 </main>
+  <script>
+async function initCancelLiff() {
+  const message = document.getElementById('message');
+
+  message.textContent = 'LINE認証を確認しています...';
+
+  try {
+    await liff.init({
+      liffId: '2012432284-iEd06CLr'
+    });
+
+    if (!liff.isLoggedIn()) {
+      liff.login();
+      return;
+    }
+
+    const idToken = liff.getIDToken();
+
+    if (!idToken) {
+      throw new Error('LINE認証情報を取得できませんでした。');
+    }
+
+    window.cancelIdToken = idToken;
+    message.textContent = 'LINE認証に成功しました。';
+
+  } catch (error) {
+    message.textContent = 'LINE認証エラー：' + error.message;
+  }
+}
+
+window.addEventListener('load', initCancelLiff);
+</script>
 </body>
 </html>
