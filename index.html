@@ -1,13 +1,168 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>GOLFREND 予約</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GOLFREND 予約</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+  margin: 0;
+  padding: 5px;
+  color: #222;
+}
+
+main {
+  background: white;
+  min-height: 100vh;
+  padding: 22px 18px 45px;
+  border-radius: 8px;
+}
+
+h1 {
+  text-align: center;
+  letter-spacing: 4px;
+  font-size: 30px;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  text-align: center;
+  letter-spacing: 2px;
+  font-size: 15px;
+  color: #666;
+  margin-top: 0;
+}
+
+label {
+  display: block;
+  margin-top: 25px;
+  font-size: 21px;
+  font-weight: bold;
+}
+
+input, select {
+  width: 100%;
+  padding: 20px;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 22px;
+  background: white;
+}
+
+button {
+  width: 100%;
+  padding: 22px;
+  margin-top: 30px;
+  background: #222;
+  color: white;
+  border: 0;
+  border-radius: 8px;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+button:disabled {
+  background: #999;
+}
+
+.note {
+  color: #777;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+#message {
+  margin-top: 18px;
+  line-height: 1.7;
+  font-size: 16px;
+}
+</style>
 </head>
+
 <body>
-  <h1>GOLFREND</h1>
-  <p>SIMULATION GOLF</p>
-  <p>予約ページ準備中</p>
+<main>
+
+<h1>GOLFREND</h1>
+<p class="subtitle">SIMULATION GOLF</p>
+
+<label for="shop">店舗</label>
+<select id="shop">
+  <option value="十和田店">十和田店</option>
+  <option value="三沢店">三沢店</option>
+</select>
+
+<label for="date">利用日</label>
+<input type="date" id="date">
+
+<label for="time">開始時間</label>
+<select id="time">
+  <option value="">利用日を選択してください</option>
+</select>
+
+<p class="note">利用時間は60分です。</p>
+
+<label for="name">氏名</label>
+<input id="name" placeholder="氏名を入力">
+
+<label for="line">LINE名</label>
+<input id="line" placeholder="任意入力">
+
+<label for="phone">電話番号</label>
+<input id="phone" type="tel" placeholder="電話番号を入力">
+
+<label for="type">利用区分</label>
+<select id="type">
+  <option value="一般">一般</option>
+  <option value="会員">会員</option>
+</select>
+
+<label for="plan">会員プラン</label>
+<select id="plan" disabled>
+  <option value="">選択してください</option>
+  <option value="5回プラン">5回プラン</option>
+  <option value="10回プラン">10回プラン</option>
+</select>
+
+<button id="send" disabled>予約を申し込む</button>
+
+<div id="message">
+  現在、予約システムを準備しています。
+</div>
+
+</main>
+
+<script>
+const dateInput = document.getElementById('date');
+const timeInput = document.getElementById('time');
+const typeInput = document.getElementById('type');
+const planInput = document.getElementById('plan');
+
+const today = new Date();
+const localToday = new Date(
+  today.getTime() - today.getTimezoneOffset() * 60000
+).toISOString().slice(0, 10);
+
+dateInput.min = localToday;
+
+typeInput.addEventListener('change', function() {
+  planInput.disabled = typeInput.value !== '会員';
+
+  if (typeInput.value !== '会員') {
+    planInput.value = '';
+  }
+});
+
+dateInput.addEventListener('change', function() {
+  timeInput.innerHTML =
+    '<option value="">空き時間の連携準備中</option>';
+});
+</script>
+
 </body>
 </html>
