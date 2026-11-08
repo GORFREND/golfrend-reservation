@@ -53,7 +53,7 @@ button {
 
 <p>以下の予約をキャンセルしますか？</p>
 
-<button id="cancelButton" disabled>
+<button id="cancelButton" disabled onclick="confirmCancellation()">
   キャンセルを確定する
 </button>
 
@@ -138,12 +138,74 @@ async function loadCancelReservationInfo(idToken) {
       '氏名：' + r.name + '\n' +
       '予約状態：' + r.status;
 
+    // キャンセル可能な予約だけボタンを有効にする
+if (
+  ['申請中', '予約確定'].includes(r.status) &&
+  r.useStatus !== '利用済'
+) {
+  document.getElementById('cancelButton').disabled = false;
+} else {
+  message.textContent = 'この予約はキャンセルできません。';
+  return;
+}
     message.textContent = '予約情報を確認してください。';
 
   } catch (error) {
     info.textContent = '予約情報を表示できませんでした。';
     message.textContent = error.message;
   }
+}
+    async function confirmCancellation() {
+  const button = document.getElementById('cancelButton');
+  const message = document.getElementById('message');
+
+  if (button.disabled || !window.cancelIdToken || !cancelReservationId) {
+    return;
+  }
+
+  const confirmed = window.confirm(
+    'この予約をキャンセルしますか？\nこの操作は取り消せません。'
+  );
+
+  if (!confirmed) return;
+
+button.disabled = true;
+message.textContent = 'キャンセル処理中です...';
+
+try {
+  const response = await fetch(
+    'https://script.google.com/macros/s/AKfycbwvw4D-oSsd4Xm42Y5_TKOUXqM-pKgV-AIImVCFGadpipOHaRj766uiWkG4dKcLce0-WQ/exec',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain'
+      },
+      body: JSON.stringify({
+        action: 'cancel',
+        idToken: window.cancelIdToken,
+        reservationId: cancelReservationId
+      })
+    }
+  );
+
+  const result = await response.json();
+
+  if (!result.success) {
+    message.textContent =
+      result.message || 'キャンセルできませんでした。';
+    return;
+  }
+
+  message.textContent = '予約のキャンセルが完了しました。';
+  document.getElementById('cancelButton').style.display = 'none';
+  document.getElementById('reservationInfo').textContent =
+    'この予約はキャンセル済みです。';
+
+} catch (error) {
+  message.textContent =
+    '通信エラーが発生しました。予約状態を確認してください。';
+  console.error(error);
+}
 }
 window.addEventListener('load', initCancelLiff);
 </script>
