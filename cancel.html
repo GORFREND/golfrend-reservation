@@ -121,6 +121,7 @@ async function loadCancelReservationInfo(idToken) {
       }
     );
 
+    message.textContent = 'GASからの応答を受信しました。';
     const result = await response.json();
 
     if (!result.success) {
