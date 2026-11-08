@@ -51,7 +51,7 @@ button {
   <p>予約情報を確認しています...</p>
 </div>
 
-<p>以下の予約をキャンセルしますか？</p>
+<p id="cancelQuestion">以下の予約をキャンセルしますか？</p>
 
 <button id="cancelButton" disabled onclick="confirmCancellation()">
   キャンセルを確定する
@@ -200,6 +200,7 @@ try {
 
   message.textContent = '予約のキャンセルが完了しました。';
   document.getElementById('cancelButton').style.display = 'none';
+  document.getElementById('cancelQuestion').style.display = 'none';
   document.getElementById('reservationInfo').textContent =
     'この予約はキャンセル済みです。';
 
