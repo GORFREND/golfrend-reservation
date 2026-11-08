@@ -163,11 +163,13 @@ if (
     return;
   }
 
-  const confirmed = window.confirm(
-    'この予約をキャンセルしますか？\nこの操作は取り消せません。'
-  );
-
-  if (!confirmed) return;
+if (button.dataset.confirmed !== 'yes') {
+  button.dataset.confirmed = 'yes';
+  button.textContent = 'もう一度押してキャンセルを確定';
+  message.textContent =
+    '本当にキャンセルする場合は、もう一度ボタンを押してください。';
+  return;
+}
 
 button.disabled = true;
 message.textContent = 'キャンセル処理中です...';
