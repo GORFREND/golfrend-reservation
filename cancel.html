@@ -81,14 +81,68 @@ async function initCancelLiff() {
       throw new Error('LINE認証情報を取得できませんでした。');
     }
 
-    window.cancelIdToken = idToken;
-    message.textContent = 'LINE認証に成功しました。';
+window.cancelIdToken = idToken;
+message.textContent = '予約情報を取得しています...';
+
+await loadCancelReservationInfo(idToken);
 
   } catch (error) {
     message.textContent = 'LINE認証エラー：' + error.message;
   }
 }
+// キャンセル対象の予約番号をURLから取得
+const params = new URLSearchParams(window.location.search);
+const cancelReservationId = params.get('reservationId');
+// LINE認証後にキャンセル対象の予約情報を取得
+async function loadCancelReservationInfo(idToken) {
+  const info = document.getElementById('reservationInfo');
+  const message = document.getElementById('message');
 
+  if (!cancelReservationId) {
+    info.textContent = '予約番号が指定されていません。';
+    message.textContent = '';
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      'https://script.google.com/macros/s/AKfycbwvw4D-oSsd4Xm42Y5_TKOUXqM-pKgV-AIImVCFGadpipOHaRj766uiWkG4dKcLce0-WQ/exec',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'text/plain'
+        },
+        body: JSON.stringify({
+          action: 'cancelInfo',
+          idToken: idToken,
+          reservationId: cancelReservationId
+        })
+      }
+    );
+
+    const result = await response.json();
+
+    if (!result.success) {
+      throw new Error(result.message || '予約情報を取得できません。');
+    }
+
+    const r = result.reservation;
+
+    info.style.whiteSpace = 'pre-line';
+    info.textContent =
+      '店舗：' + r.shop + '\n' +
+      '利用日：' + r.date + '\n' +
+      '開始時間：' + r.time + '\n' +
+      '氏名：' + r.name + '\n' +
+      '予約状態：' + r.status;
+
+    message.textContent = '予約情報を確認してください。';
+
+  } catch (error) {
+    info.textContent = '予約情報を表示できませんでした。';
+    message.textContent = error.message;
+  }
+}
 window.addEventListener('load', initCancelLiff);
 </script>
 </body>
